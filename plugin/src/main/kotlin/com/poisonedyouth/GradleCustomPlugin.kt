@@ -23,6 +23,9 @@ class GradleCustomPlugin : Plugin<Project> {
 open class CountLinesTask : DefaultTask() {
 
     @Input
+    var projectPath: String = project.path
+
+    @Input
     var fileTypes: List<String> = defaultFileTypes
 
     @Input
@@ -32,7 +35,7 @@ open class CountLinesTask : DefaultTask() {
     fun countLines() {
         println("Start producing count lines report...")
         val result = mutableMapOf<String, Int>()
-        val projectRootDir = project.rootDir
+        val projectRootDir = project.projectDir
         println("Root directory: $projectRootDir")
         projectRootDir.walk()
             .filter { it.isFile && it.extension in fileTypes }
