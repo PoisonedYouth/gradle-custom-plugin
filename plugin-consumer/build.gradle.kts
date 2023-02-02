@@ -9,14 +9,6 @@ repositories{
 
 tasks.countLines {
     println("Configure Task")
-    fileTypes = listOf("kt", "kts")
+    fileTypes = listOf("kt", "kts", "yaml")
 
 }
-
-
-
-
-
-
-
-
