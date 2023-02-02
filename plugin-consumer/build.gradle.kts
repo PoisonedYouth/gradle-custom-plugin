@@ -7,8 +7,12 @@ repositories{
     mavenCentral()
 }
 
-tasks.countLines {
-    println("Configure Task")
+tasks.printReportToTerminal {
     fileTypes = listOf("kt", "kts", "yaml")
 
+}
+
+tasks.printReportToFile {
+    fileTypes = listOf("kt", "kts", "yaml")
+    reportFilePath = "build/reports/reports.txt"
 }

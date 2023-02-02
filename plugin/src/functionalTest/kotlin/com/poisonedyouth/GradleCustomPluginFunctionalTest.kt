@@ -47,7 +47,7 @@ class GradleCustomPluginFunctionalTest {
         val runner = GradleRunner.create()
         runner.forwardOutput()
         runner.withPluginClasspath()
-        runner.withArguments("countLines")
+        runner.withArguments("printReportToFile")
         runner.withProjectDir(projectDir.toFile())
         val result = runner.build()
 
@@ -73,7 +73,7 @@ class GradleCustomPluginFunctionalTest {
             plugins {
                 id('com.poisonedyouth.countLines')
             }
-            tasks.countLines{
+            tasks.printReportToFile{
                 fileTypes = ["kt", "yaml"]
             }
         """.trimIndent()
@@ -97,7 +97,7 @@ class GradleCustomPluginFunctionalTest {
         val runner = GradleRunner.create()
         runner.forwardOutput()
         runner.withPluginClasspath()
-        runner.withArguments("countLines")
+        runner.withArguments("printReportToFile")
         runner.withProjectDir(projectDir.toFile())
         val result = runner.build()
 

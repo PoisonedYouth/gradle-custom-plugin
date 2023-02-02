@@ -16,23 +16,16 @@ private val defaultReportFilePath: String = "build/reports/countLines.txt"
 class GradleCustomPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         // Register a task
-        project.tasks.create("countLines", CountLinesTask::class.java)
+        project.tasks.create("printReportToTerminal", PrintReportToTerminalTask::class.java)
+        project.tasks.create("printReportToFile", PrintReportToFileTask::class.java)
     }
 }
 
-open class CountLinesTask : DefaultTask() {
-
-    @Input
-    var projectPath: String = project.path
-
+abstract class CountLinesTask : DefaultTask() {
     @Input
     var fileTypes: List<String> = defaultFileTypes
 
-    @Input
-    var reportFilePath: String = defaultReportFilePath
-
-    @TaskAction
-    fun countLines() {
+    protected fun countLines(): Map<String, Int> {
         println("Start producing count lines report...")
         val result = mutableMapOf<String, Int>()
         val projectRootDir = project.projectDir
@@ -49,13 +42,34 @@ open class CountLinesTask : DefaultTask() {
                 }
 
             }
-        val reportFile = projectRootDir.toPath().resolve(reportFilePath)
-        Files.createDirectories(reportFile.parent)
-        Files.write(reportFile, printReport(result))
-        println("Finished producing count lines report in path: $reportFilePath")
+        return result.toMap()
     }
 
-    private fun printReport(result: MutableMap<String, Int>): List<String> {
-        return result.map { "Filetype:${it.key} \t-\t Lines:${it.value}" }
+    protected fun printReport(result: Map<String, Int>): String {
+        return result.map { "Filetype:${it.key} \t-\t Lines:${it.value}" }.joinToString("\n")
+    }
+
+}
+
+open class PrintReportToTerminalTask : CountLinesTask() {
+
+    @TaskAction
+    fun printReportToTerminal() {
+        println(printReport(countLines()))
+    }
+}
+
+open class PrintReportToFileTask : CountLinesTask() {
+
+    @Input
+    var reportFilePath: String = defaultReportFilePath
+
+    @TaskAction
+    fun printReportToFile() {
+        val projectRootDir = project.projectDir
+        val reportFile = projectRootDir.toPath().resolve(reportFilePath)
+        Files.createDirectories(reportFile.parent)
+        Files.writeString(reportFile, printReport(countLines()))
+        println("Finished producing count lines report in path: $reportFilePath")
     }
 }

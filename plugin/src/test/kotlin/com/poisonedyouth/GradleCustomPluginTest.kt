@@ -13,7 +13,7 @@ import kotlin.test.assertNotNull
  */
 class GradleCustomPluginTest {
     @Test
-    fun `plugin registers task`() {
+    fun `plugin registers tasks`() {
         // given
         val project = ProjectBuilder.builder().build()
 
@@ -21,11 +21,12 @@ class GradleCustomPluginTest {
         project.plugins.apply("com.poisonedyouth.countLines")
 
         // then
-        assertNotNull(project.tasks.findByName("countLines"))
+        assertNotNull(project.tasks.findByName("printReportToTerminal"))
+        assertNotNull(project.tasks.findByName("printReportToFile"))
     }
 
     @Test
-    fun `plugin correctly sets defaults`() {
+    fun `plugin correctly sets defaults for printReportToFile`() {
         // given
         val project = ProjectBuilder.builder().build()
 
@@ -33,10 +34,21 @@ class GradleCustomPluginTest {
         project.plugins.apply("com.poisonedyouth.countLines")
 
         // then
-        val task = project.tasks.getByName("countLines") as CountLinesTask
+        val task = project.tasks.getByName("printReportToFile") as PrintReportToFileTask
         assertEquals(task.fileTypes, listOf("kt"))
         assertEquals(task.reportFilePath, "build/reports/countLines.txt")
+    }
 
+    @Test
+    fun `plugin correctly sets defaults for printReportToTerminal`() {
+        // given
+        val project = ProjectBuilder.builder().build()
 
+        // when
+        project.plugins.apply("com.poisonedyouth.countLines")
+
+        // then
+        val task = project.tasks.getByName("printReportToTerminal") as PrintReportToTerminalTask
+        assertEquals(task.fileTypes, listOf("kt"))
     }
 }
